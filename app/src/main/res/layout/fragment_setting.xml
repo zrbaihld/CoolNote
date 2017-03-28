@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/lin"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <RelativeLayout
+        android:id="@+id/rl_lock"
+        style="@style/option_item_rl">
+
+        <TextView
+            style="@style/option_item_text_parent"
+            android:text="@string/jia_mi"
+            android:textColor="#000"
+            android:textSize="16sp" />
+
+        <com.htq.baidu.coolnote.widget.ToggleButton
+            android:id="@+id/tb_lock"
+            style="@style/option_item_toggleButton"
+            android:layout_alignParentRight="true" />
+
+    </RelativeLayout>
+    <View
+        android:layout_height="1dp"
+        android:layout_width="match_parent"
+        android:background="#333"></View>
+    <RelativeLayout
+        android:id="@+id/rl_Tran"
+        style="@style/option_item_rl">
+
+        <TextView
+            style="@style/option_item_text_parent"
+            android:text="@string/settran"
+            android:textColor="#000"
+            android:textSize="16sp" />
+
+        <com.htq.baidu.coolnote.widget.ToggleButton
+            android:id="@+id/tb_tran"
+            style="@style/option_item_toggleButton"
+            android:layout_alignParentRight="true" />
+
+    </RelativeLayout>
+</LinearLayout>

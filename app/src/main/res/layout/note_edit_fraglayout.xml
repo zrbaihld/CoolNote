@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingBottom="2dp"
+    android:paddingLeft="2dp"
+    android:paddingRight="2dp" >
+
+    <EditText
+        android:id="@+id/note_detail_edit"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="50dp"
+        android:gravity="top"
+        android:autoLink="email|phone|web"
+        android:hint="@null"
+        android:singleLine="false"
+        android:textColor="#333" />
+
+    <include
+        android:id="@+id/note_detail_menu"
+        layout="@layout/layout_note_detail_menu" />
+
+    <RelativeLayout
+        android:id="@+id/note_detail_titlebar"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:layout_marginTop="15dp"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp" >
+
+        <TextView
+            android:id="@+id/note_detail_tv_date"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:gravity="center"
+            android:textColor="#666" />
+
+        <ImageView
+            android:id="@+id/note_detail_img_button"
+            style="@style/note_detail_menu"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:contentDescription="@null"
+            android:src="@drawable/icon_color" />
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/note_detail_img_thumbtack"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/note_detail_titlebar"
+        android:layout_centerHorizontal="true"
+        android:contentDescription="@null"
+        android:paddingBottom="5dp" />
+
+    <com.github.clans.fab.FloatingActionMenu
+        android:id="@+id/floating_action_menu"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:paddingLeft="10dp"
+        fab:menu_labels_ellipsize="end"
+        fab:menu_labels_singleLine="true"
+        fab:menu_backgroundColor="@color/transparent"
+       ><!--   fab:menu_icon="@drawable/actionbar_icon_add" #ccffffff-->
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/menu_item_text_font"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/menu_font_size"
+            fab:fab_size="mini"
+            fab:fab_label="字体大小" />
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/menu_item_clock"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/menu_alert"
+            fab:fab_size="mini"
+            fab:fab_label="设置闹钟" />
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/menu_item_desktop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/menu_to_desktop"
+            fab:fab_size="mini"
+            fab:fab_label="添加到桌面" />
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/menu_item_share"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/menu_share"
+            fab:fab_size="mini"
+            fab:fab_label="分享记录" />
+
+    </com.github.clans.fab.FloatingActionMenu>
+    <LinearLayout
+        android:id="@+id/font_size_selector"
+        android:layout_width="fill_parent"
+        android:layout_height="115dp"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/font_size_selector_bg"
+        android:visibility="gone"
+       >
+        <!--android:layout_gravity="bottom"-->
+        <FrameLayout
+            android:id="@+id/ll_font_small"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dip"
+                    android:src="@drawable/font_small" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/font_small"
+                    android:textAppearance="@style/TextAppearanceUnderMenuIcon" />
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/iv_small_select"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_gravity="bottom|right"
+                android:layout_marginBottom="-7dip"
+                android:layout_marginRight="7dip"
+                android:focusable="false"
+                android:src="@drawable/selected"
+                android:visibility="gone"  />
+        </FrameLayout>
+<!--  -->
+        <FrameLayout
+            android:id="@+id/ll_font_normal"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dip"
+                    android:src="@drawable/font_normal" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/font_normal"
+                    android:textAppearance="@style/TextAppearanceUnderMenuIcon" />
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/iv_medium_select"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_gravity="bottom|right"
+                android:layout_marginBottom="-7dip"
+                android:layout_marginRight="7dip"
+                android:focusable="false"
+                android:src="@drawable/selected"
+                android:visibility="gone" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/ll_font_large"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dip"
+                    android:src="@drawable/font_large" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/font_large"
+                    android:textAppearance="@style/TextAppearanceUnderMenuIcon" />
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/iv_large_select"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_gravity="bottom|right"
+                android:layout_marginBottom="-7dip"
+                android:layout_marginRight="7dip"
+                android:focusable="false"
+                android:src="@drawable/selected"
+                android:visibility="gone" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/ll_font_super"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dip"
+                    android:src="@drawable/font_super" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/font_super"
+                    android:textAppearance="@style/TextAppearanceUnderMenuIcon" />
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/iv_super_select"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_gravity="bottom|right"
+                android:layout_marginBottom="-7dip"
+                android:layout_marginRight="7dip"
+                android:focusable="false"
+                android:src="@drawable/selected"
+                android:visibility="gone" />
+        </FrameLayout>
+    </LinearLayout>
+</RelativeLayout>

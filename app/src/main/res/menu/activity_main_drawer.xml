@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+
+        <item
+            android:id="@+id/nav_home"
+            android:icon="@drawable/ic_menu_slideshow"
+            android:title="@string/home" />
+        <!--
+        <item
+            android:id="@+id/nav_create_folder"
+            android:icon="@drawable/ic_menu_slideshow"
+            android:title="@string/create_folder" />
+        <item
+            android:id="@+id/nav_find"
+            android:icon="@drawable/ic_menu_slideshow"
+            android:title="@string/find" />-->
+        <item
+            android:id="@+id/nav_change_bg"
+            android:icon="@drawable/ic_menu_gallery"
+            android:title="@string/change_bg" />
+
+        <item
+            android:id="@+id/nav_setting"
+            android:icon="@drawable/ic_menu_manage"
+            android:title="@string/setting" />
+    </group>
+
+    <item android:title="">
+        <menu>
+            <item
+                android:id="@+id/nav_share"
+                android:icon="@drawable/ic_menu_share"
+                android:title="@string/share_app" />
+            <item
+                android:id="@+id/nav_about"
+                android:icon="@drawable/about"
+                android:title="@string/about_app" />
+         </menu>
+ </item>
+    <item android:title="">
+        <menu>
+            <item
+                android:id="@+id/nav_exit"
+                android:icon="@android:drawable/ic_menu_info_details"
+                android:title="@string/exit" />
+        </menu>
+    </item>
+</menu>
