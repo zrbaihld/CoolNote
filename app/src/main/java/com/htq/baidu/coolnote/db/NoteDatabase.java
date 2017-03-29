@@ -3,6 +3,8 @@ package com.htq.baidu.coolnote.db;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.text.TextUtils;
+import android.util.Log;
 
 
 import com.htq.baidu.coolnote.entity.NotebookData;
@@ -28,12 +30,12 @@ public class NoteDatabase {
     public void insert(NotebookData data) {
         String sql = "insert into " + DatabaseHelper.NOTE_TABLE_NAME;
 
-        sql += "(_id, objectid, iid, time, date, content, color, classify, level) values(?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        sql += "(_id, objectid, iid, time, date, content, color, classify, level, father) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         SQLiteDatabase sqlite = dbHelper.getWritableDatabase();
         sqlite.execSQL(sql, new String[]{data.getId() + "",
                 data.getIid() + "", data.getObjectId(), data.getUnixTime() + "", data.getDate(),
-                data.getContent(), data.getColor() + "", data.getClassified()});
+                data.getContent(), data.getColor() + "", data.getClassified(), data.getLevel() + "", data.getFather()});
         sqlite.close();
     }
 
@@ -45,12 +47,12 @@ public class NoteDatabase {
     public void insertTable(NotebookData data) {
         String sql = "insert into " + DatabaseHelper.NOTE_TABLE_NAME;
 
-        sql += "(_id, objectid, iid, time, date, content, color, classify, level) values(?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        sql += "(_id, objectid, iid, time, date, content, color, classify, level, father) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         SQLiteDatabase sqlite = dbHelper.getWritableDatabase();
         sqlite.execSQL(sql, new String[]{data.getId() + "",
                 data.getIid() + "", data.getObjectId(), data.getUnixTime() + "", data.getDate(),
-                data.getContent(), data.getColor() + "", data.getClassified()});
+                data.getContent(), data.getColor() + "", data.getClassified(), data.getLevel() + "", data.getFather()});
         sqlite.close();
     }
 
@@ -73,11 +75,11 @@ public class NoteDatabase {
      */
     public void update(NotebookData data) {
         SQLiteDatabase sqlite = dbHelper.getWritableDatabase();
-        String sql = ("update " + DatabaseHelper.NOTE_TABLE_NAME + " set iid=?, objectid=?, time=?, date=?, content=?, color=?, classify=?, level=? where _id=?");
+        String sql = ("update " + DatabaseHelper.NOTE_TABLE_NAME + " set iid=?, objectid=?, time=?, date=?, content=?, color=?, classify=?, level=?, father=? where _id=?");
         sqlite.execSQL(sql,
                 new String[]{data.getIid() + "", data.getObjectId() + "", data.getUnixTime() + "",
                         data.getDate(), data.getContent(),
-                        data.getColor() + "", data.getClassified(), data.getLevel() + "", data.getId() + ""});
+                        data.getColor() + "", data.getClassified(), data.getLevel() + "", data.getFather(), data.getId() + ""});
         sqlite.close();
     }
 
@@ -85,9 +87,13 @@ public class NoteDatabase {
         if (level < 0) {
             return query(" ");
         } else {
-            return query(" where level=" + level);
+            return query(String.format(" where level = %s ", level));
         }
 
+    }
+
+    public List<NotebookData> queryString(String father) {
+        return query(String.format(" where father = '%s' ", father));
     }
 
     /**
@@ -99,9 +105,15 @@ public class NoteDatabase {
     public List<NotebookData> query(String where) {
         SQLiteDatabase sqlite = dbHelper.getReadableDatabase();
         ArrayList<NotebookData> data = null;
+
+        String sql = "select * from "
+                + DatabaseHelper.NOTE_TABLE_NAME + where;
         data = new ArrayList<NotebookData>();
-        Cursor cursor = sqlite.rawQuery("select * from "
-                + DatabaseHelper.NOTE_TABLE_NAME + where, null);
+        Cursor cursor = sqlite.rawQuery(sql, null);
+
+        Log.e("exce", "sql  " + sql);
+
+
         for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
             NotebookData notebookData = new NotebookData();
             notebookData.setId(cursor.getInt(0));
@@ -113,6 +125,7 @@ public class NoteDatabase {
             notebookData.setColor(cursor.getInt(6));
             notebookData.setClassified(cursor.getString(7));
             notebookData.setLevel(cursor.getInt(8));
+            notebookData.setFather(cursor.getString(9));
             data.add(notebookData);
         }
         if (!cursor.isClosed()) {

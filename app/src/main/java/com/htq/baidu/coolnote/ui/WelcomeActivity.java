@@ -27,6 +27,7 @@ import cn.bmob.v3.listener.SaveListener;
  */
 public class WelcomeActivity extends AppCompatActivity {
     private boolean isSetLock;
+    private boolean isdebug = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,72 +35,73 @@ public class WelcomeActivity extends AppCompatActivity {
         /*set it to be no title*/
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         /*set it to be full screen*/
-         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-               WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_welcome);
         //初始化bmob
 //        String libName = "bmob";
 //        System.loadLibrary(libName );
 
         isSetLock = new SystemUtils(WelcomeActivity.this).getBoolean("isSetLock");
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
+//
+        if (isdebug)
+            goToHomeActivity();
+        else
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
 
-                Intent intent;
-                if (isSetLock) {
+                    Intent intent;
+                    if (isSetLock) {
 
-                    intent = new Intent(WelcomeActivity.this, UnLockActivity.class);
-                    startActivity(intent);
-                    WelcomeActivity.this.finish();
-                } else {
-                    autoLogin();
-                    //intent = new Intent(WelcomeActivity.this, LoginActivity.class);
+                        intent = new Intent(WelcomeActivity.this, UnLockActivity.class);
+                        startActivity(intent);
+                        WelcomeActivity.this.finish();
+                    } else {
+                        autoLogin();
+                        //intent = new Intent(WelcomeActivity.this, LoginActivity.class);
+                    }
+
+                }
+            }, 2000);
+    }
+
+    private void autoLogin() {
+        if (SPUtils.contains(this, "user_name")) {
+            String name = (String) SPUtils.get(this, "user_name", "");
+            String pwd = (String) SPUtils.get(this, "pwd", "");
+            User user = new User();
+            user.setUsername(name);
+            user.setPassword(pwd);
+            user.login(this, new SaveListener() {
+                @Override
+                public void onSuccess() {
+                    //  Snackbar.make(loginBtn,"登录成功！",Snackbar.LENGTH_SHORT).show();
+                    goToHomeActivity();
+
                 }
 
-            }
-        }, 2000);
+                @Override
+                public void onFailure(int code, String msg) {
+                    //Snackbar.make(loginBtn,"登录失败！",Snackbar.LENGTH_SHORT).show();
+                    Toast.makeText(WelcomeActivity.this, msg, Toast.LENGTH_SHORT).show();
+                    goToLoginActivity();//自动登陆失败，用户手动登陆
+                }
+            });
+        } else {
+            goToLoginActivity();
+        }
     }
-    private void autoLogin()
-    {
-            if(SPUtils.contains(this,"user_name"))
-            {
-                String name=(String)SPUtils.get(this,"user_name","");
-                String pwd=(String)SPUtils.get(this,"pwd","");
-                User user = new User();
-                user.setUsername(name);
-                user.setPassword(pwd);
-                user.login(this, new SaveListener() {
-                    @Override
-                    public void onSuccess() {
-                      //  Snackbar.make(loginBtn,"登录成功！",Snackbar.LENGTH_SHORT).show();
-                        goToHomeActivity();
 
-                    }
-
-                    @Override
-                    public void onFailure(int code, String msg) {
-                        //Snackbar.make(loginBtn,"登录失败！",Snackbar.LENGTH_SHORT).show();
-                        Toast.makeText(WelcomeActivity.this,msg, Toast.LENGTH_SHORT).show();
-                        goToLoginActivity();//自动登陆失败，用户手动登陆
-                    }
-                });
-            }
-        else
-            {
-                goToLoginActivity();
-            }
-    }
-    private void goToHomeActivity()
-    {
-        Intent intent=new Intent(WelcomeActivity.this,MainActivity.class);
+    private void goToHomeActivity() {
+        Intent intent = new Intent(WelcomeActivity.this, MainActivity.class);
         startActivity(intent);
         WelcomeActivity.this.finish();
 
     }
-    private void goToLoginActivity()
-    {
-        Intent intent=new Intent(WelcomeActivity.this,LoginActivity.class);
+
+    private void goToLoginActivity() {
+        Intent intent = new Intent(WelcomeActivity.this, LoginActivity.class);
         startActivity(intent);
         WelcomeActivity.this.finish();
 

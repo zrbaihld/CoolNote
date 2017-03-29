@@ -1,27 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:fab="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:paddingBottom="2dp"
-    android:paddingLeft="2dp"
-    android:paddingRight="2dp" >
+                xmlns:fab="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:paddingBottom="2dp"
+                android:paddingLeft="2dp"
+                android:paddingRight="2dp">
 
     <EditText
         android:id="@+id/note_detail_edit"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="50dp"
-        android:gravity="top"
         android:autoLink="email|phone|web"
+        android:gravity="top"
         android:hint="@null"
         android:singleLine="false"
-        android:textColor="#333" />
+        android:textColor="#333"
+        />
+
+    <TextView
+        android:id="@+id/note_detail_tv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="50dp"
+        android:autoLink="email|phone|web"
+        android:gravity="top"
+        android:hint="@null"
+        android:singleLine="false"
+        android:textColor="#333"/>
 
     <include
         android:id="@+id/note_detail_menu"
-        layout="@layout/layout_note_detail_menu" />
+        layout="@layout/layout_note_detail_menu"/>
 
     <RelativeLayout
         android:id="@+id/note_detail_titlebar"
@@ -29,7 +41,7 @@
         android:layout_height="35dp"
         android:layout_marginTop="15dp"
         android:paddingLeft="15dp"
-        android:paddingRight="15dp" >
+        android:paddingRight="15dp">
 
         <TextView
             android:id="@+id/note_detail_tv_date"
@@ -38,7 +50,7 @@
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
             android:gravity="center"
-            android:textColor="#666" />
+            android:textColor="#666"/>
 
         <ImageView
             android:id="@+id/note_detail_img_button"
@@ -46,7 +58,7 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:contentDescription="@null"
-            android:src="@drawable/icon_color" />
+            android:src="@drawable/icon_color"/>
     </RelativeLayout>
 
     <ImageView
@@ -56,7 +68,7 @@
         android:layout_alignBottom="@+id/note_detail_titlebar"
         android:layout_centerHorizontal="true"
         android:contentDescription="@null"
-        android:paddingBottom="5dp" />
+        android:paddingBottom="5dp"/>
 
     <com.github.clans.fab.FloatingActionMenu
         android:id="@+id/floating_action_menu"
@@ -65,40 +77,52 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:paddingLeft="10dp"
+        fab:menu_backgroundColor="@color/transparent"
         fab:menu_labels_ellipsize="end"
         fab:menu_labels_singleLine="true"
-        fab:menu_backgroundColor="@color/transparent"
-       ><!--   fab:menu_icon="@drawable/actionbar_icon_add" #ccffffff-->
+        ><!--   fab:menu_icon="@drawable/actionbar_icon_add" #ccffffff-->
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/menu_item_text_edit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/menu_font_size"
+            fab:fab_label="编辑内容"
+            fab:fab_size="mini"/>
+
         <com.github.clans.fab.FloatingActionButton
             android:id="@+id/menu_item_text_font"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/menu_font_size"
-            fab:fab_size="mini"
-            fab:fab_label="字体大小" />
+            fab:fab_label="字体大小"
+            fab:fab_size="mini"/>
+
         <com.github.clans.fab.FloatingActionButton
             android:id="@+id/menu_item_clock"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/menu_alert"
-            fab:fab_size="mini"
-            fab:fab_label="设置闹钟" />
+            fab:fab_label="设置闹钟"
+            fab:fab_size="mini"/>
+
         <com.github.clans.fab.FloatingActionButton
             android:id="@+id/menu_item_desktop"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/menu_to_desktop"
-            fab:fab_size="mini"
-            fab:fab_label="添加到桌面" />
+            fab:fab_label="添加到桌面"
+            fab:fab_size="mini"/>
+
         <com.github.clans.fab.FloatingActionButton
             android:id="@+id/menu_item_share"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/menu_share"
-            fab:fab_size="mini"
-            fab:fab_label="分享记录" />
+            fab:fab_label="分享记录"
+            fab:fab_size="mini"/>
 
     </com.github.clans.fab.FloatingActionMenu>
+
     <LinearLayout
         android:id="@+id/font_size_selector"
         android:layout_width="fill_parent"
@@ -106,7 +130,7 @@
         android:layout_alignParentBottom="true"
         android:background="@drawable/font_size_selector_bg"
         android:visibility="gone"
-       >
+        >
         <!--android:layout_gravity="bottom"-->
         <FrameLayout
             android:id="@+id/ll_font_small"
@@ -125,13 +149,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="5dip"
-                    android:src="@drawable/font_small" />
+                    android:src="@drawable/font_small"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/font_small"
-                    android:textAppearance="@style/TextAppearanceUnderMenuIcon" />
+                    android:textAppearance="@style/TextAppearanceUnderMenuIcon"/>
             </LinearLayout>
 
             <ImageView
@@ -143,9 +167,9 @@
                 android:layout_marginRight="7dip"
                 android:focusable="false"
                 android:src="@drawable/selected"
-                android:visibility="gone"  />
+                android:visibility="gone"/>
         </FrameLayout>
-<!--  -->
+        <!--  -->
         <FrameLayout
             android:id="@+id/ll_font_normal"
             android:layout_width="0dip"
@@ -163,13 +187,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="5dip"
-                    android:src="@drawable/font_normal" />
+                    android:src="@drawable/font_normal"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/font_normal"
-                    android:textAppearance="@style/TextAppearanceUnderMenuIcon" />
+                    android:textAppearance="@style/TextAppearanceUnderMenuIcon"/>
             </LinearLayout>
 
             <ImageView
@@ -181,7 +205,7 @@
                 android:layout_marginRight="7dip"
                 android:focusable="false"
                 android:src="@drawable/selected"
-                android:visibility="gone" />
+                android:visibility="gone"/>
         </FrameLayout>
 
         <FrameLayout
@@ -201,13 +225,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="5dip"
-                    android:src="@drawable/font_large" />
+                    android:src="@drawable/font_large"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/font_large"
-                    android:textAppearance="@style/TextAppearanceUnderMenuIcon" />
+                    android:textAppearance="@style/TextAppearanceUnderMenuIcon"/>
             </LinearLayout>
 
             <ImageView
@@ -219,7 +243,7 @@
                 android:layout_marginRight="7dip"
                 android:focusable="false"
                 android:src="@drawable/selected"
-                android:visibility="gone" />
+                android:visibility="gone"/>
         </FrameLayout>
 
         <FrameLayout
@@ -239,13 +263,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="5dip"
-                    android:src="@drawable/font_super" />
+                    android:src="@drawable/font_super"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/font_super"
-                    android:textAppearance="@style/TextAppearanceUnderMenuIcon" />
+                    android:textAppearance="@style/TextAppearanceUnderMenuIcon"/>
             </LinearLayout>
 
             <ImageView
@@ -257,7 +281,7 @@
                 android:layout_marginRight="7dip"
                 android:focusable="false"
                 android:src="@drawable/selected"
-                android:visibility="gone" />
+                android:visibility="gone"/>
         </FrameLayout>
     </LinearLayout>
 </RelativeLayout>

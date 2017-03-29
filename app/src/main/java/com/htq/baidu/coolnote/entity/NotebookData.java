@@ -32,9 +32,18 @@ public class NotebookData extends BmobObject implements /*Serializable,*/
     private String content;
 
     private String colorText;
+    private String father;
 
     private int color;
     private int level;
+
+    public String getFather() {
+        return father;
+    }
+
+    public void setFather(String father) {
+        this.father = father;
+    }
 
     public int getLevel() {
         return level;

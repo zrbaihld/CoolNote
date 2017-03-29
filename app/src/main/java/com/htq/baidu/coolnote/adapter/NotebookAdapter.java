@@ -119,36 +119,42 @@ public class NotebookAdapter extends BaseAdapter implements HTQDragGridView.Drag
         holder.content.setLayoutParams(params);
         holder.note_class.setLayoutParams(params);
 
-        holder.titleBar
-                .setBackgroundColor(NoteEditFragment.sTitleBackGrounds[data
-                        .getColor()]);
 
         holder.date.setText(data.getDate());
-        if (data.getId() > 0) {
-            holder.state.setVisibility(View.GONE);
-        } else {
-            holder.state.setVisibility(View.VISIBLE);
-        }
-        holder.thumbtack.setImageResource(NoteEditFragment.sThumbtackImgs[data
-                .getColor()]);
+        holder.state.setVisibility(View.GONE);
+//        if (data.getId() > 0) {
+//            holder.state.setVisibility(View.GONE);
+//        } else {
+//            holder.state.setVisibility(View.VISIBLE);
+//        }
+
         if (!TextUtils.isEmpty(data.getContent())) {
             holder.content.setTextViewHTML(data.getContent());
             holder.note_class.setVisibility(View.GONE);
             holder.content.setVisibility(View.VISIBLE);
+            holder.thumbtack.setVisibility(View.VISIBLE);
+            holder.content.setBackgroundColor(NoteEditFragment.sBackGrounds[data
+                    .getColor()]);
+            holder.thumbtack.setImageResource(NoteEditFragment.sThumbtackImgs[data
+                    .getColor()]);
+            holder.titleBar
+                    .setBackgroundColor(NoteEditFragment.sTitleBackGrounds[data
+                            .getColor()]);
         } else {
             holder.content.setVisibility(View.GONE);
             holder.note_class.setVisibility(View.VISIBLE);
             holder.note_class.setText(data.getClassified());
+            holder.thumbtack.setVisibility(View.GONE);
+            holder.titleBar
+                    .setBackgroundColor(0xffFFA726);
+            holder.note_class.setBackgroundColor(0xffFFB74D);
         }
-//        holder.content.setBackgroundColor(NoteEditFragment.sBackGrounds[data
-//                .getColor()]);
+
         holder.content.setAutoLinkMask(Linkify.ALL);
-        holder.content.setMovementMethod(
-                TextViewFixTouchConsume.LocalLinkMovementMethod.getInstance()
-        );
-        holder.content.setFocusable(true);
-        holder.content.setClickable(true);
-        holder.content.setLongClickable(true);
+//        holder.content.setMovementMethod(
+//                TextViewFixTouchConsume.LocalLinkMovementMethod.getInstance()
+//        );
+
         //下面这行代码重要，好多例子中都没有这行代码，
         //结果实际运行效果却是点击链接没有反应
 //        holder.content.setMovementMethod(LinkMovementMethod.getInstance());

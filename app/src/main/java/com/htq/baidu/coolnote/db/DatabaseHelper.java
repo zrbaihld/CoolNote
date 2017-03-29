@@ -17,7 +17,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String CREATE_NOTE_TABLE = "create table "
             + NOTE_TABLE_NAME
             + " (_id integer primary key autoincrement, objectid text, iid integer,"
-            + " time varchar(10), date varchar(10), content text, color integer, classify text, level integer)";
+            + " time varchar(10), date varchar(10), content text, color integer, classify text, level integer,father text)";
 
     public static final String NEWS_LIST = "osc_news_list";
 
@@ -26,7 +26,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + "news_id interger, title varchar(10), " + ")";
 
     public DatabaseHelper(Context context) {
-        super(context, COOLNOTE_DATABASE_NAME, null, 1);
+        super(context, COOLNOTE_DATABASE_NAME, null, 2);
     }
 
     @Override

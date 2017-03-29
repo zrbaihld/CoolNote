@@ -1,7 +1,6 @@
 package com.htq.baidu.coolnote.ui;
 
 
-
 import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.PendingIntent;
@@ -47,6 +46,7 @@ import com.htq.baidu.coolnote.utils.ResourceParser;
 import com.htq.baidu.coolnote.utils.SPUtils;
 import com.htq.baidu.coolnote.utils.StringUtils;
 import com.htq.baidu.coolnote.utils.SystemUtils;
+import com.htq.baidu.coolnote.widget.TextViewFixTouchConsume;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -59,9 +59,13 @@ import butterknife.OnClick;
 /**
  * Created by htq on 2016/8/8.
  */
-public class NoteEditFragment  extends Fragment implements View.OnClickListener,View.OnTouchListener {
+public class NoteEditFragment extends Fragment implements View.OnClickListener, View.OnTouchListener {
     @BindView(R.id.note_detail_edit)
     EditText mEtContent;
+
+    @BindView(R.id.note_detail_tv)
+    TextView mTvContent;
+
     @BindView(R.id.note_detail_tv_date)
     TextView mTvDate;
     @BindView(R.id.note_detail_titlebar)
@@ -123,30 +127,33 @@ public class NoteEditFragment  extends Fragment implements View.OnClickListener,
     static {
         sFontSizeBtnsMap.put(R.id.ll_font_large, Constants.TEXT_LARGE);
         sFontSizeBtnsMap.put(R.id.ll_font_small, Constants.TEXT_SMALL);
-        sFontSizeBtnsMap.put(R.id.ll_font_normal,Constants.TEXT_MEDIUM);
+        sFontSizeBtnsMap.put(R.id.ll_font_normal, Constants.TEXT_MEDIUM);
         sFontSizeBtnsMap.put(R.id.ll_font_super, Constants.TEXT_SUPER);
     }
-    public static final int[] sBackGrounds = { 0xffe5fce8,// 绿色
+
+    public static final int[] sBackGrounds = {0xffe5fce8,// 绿色
             0xfffffdd7,// 黄色
             0xffffddde,// 红色
             0xffccf2fd,// 蓝色
             0xfff7f5f6,// 紫色
     };
-    public static final int[] sTitleBackGrounds = { 0xffcef3d4,// 绿色
+    public static final int[] sTitleBackGrounds = {0xffcef3d4,// 绿色
             0xffebe5a9,// 黄色
             0xffecc4c3,// 红色
             0xffa9d5e2,// 蓝色
             0xffddd7d9,// 紫色
     };
 
-    public static final int[] sThumbtackImgs = { R.drawable.green,
+    public static final int[] sThumbtackImgs = {R.drawable.green,
             R.drawable.yellow, R.drawable.red, R.drawable.blue,
-            R.drawable.purple };
+            R.drawable.purple};
+    View rootView;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        View rootView = inflater.inflate(R.layout.note_edit_fraglayout,
+        rootView = inflater.inflate(R.layout.note_edit_fraglayout,
                 container, false);
         ButterKnife.bind(this, rootView);
         initData();
@@ -164,26 +171,49 @@ public class NoteEditFragment  extends Fragment implements View.OnClickListener,
         mImgYellow.setOnClickListener(this);
         mImgRed.setOnClickListener(this);
 
+
         mEtContent.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
         mEtContent.setSingleLine(false);
         mEtContent.setHorizontallyScrolling(false);
-        mEtContent.setText(Html.fromHtml(editData.getContent()).toString());
-        mTvDate.setText(editData.getDate());
 
         mEtContent.setBackgroundColor(sBackGrounds[editData.getColor()]);
+
+        mTvContent.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
+        mTvContent.setSingleLine(false);
+        mTvContent.setHorizontallyScrolling(false);
+
+        mTvContent.setFocusable(false);
+        mTvContent.setClickable(false);
+        mTvContent.setLongClickable(false);
+
+        mTvContent.setBackgroundColor(sBackGrounds[editData.getColor()]);
+
+        mTvContent.setMovementMethod(
+                TextViewFixTouchConsume.LocalLinkMovementMethod.getInstance()
+        );
+
+
+        if (TextUtils.isEmpty(editData.getContent())) {
+            mEtContent.setText(Html.fromHtml(editData.getContent()).toString());
+            mTvContent.setVisibility(View.GONE);
+        } else {
+            mTvContent.setText(Html.fromHtml(editData.getContent()).toString());
+        }
+        mTvDate.setText(editData.getDate());
+
+
         mLayoutTitle.setBackgroundColor(sTitleBackGrounds[editData.getColor()]);
         mImgThumbtack.setImageResource(sThumbtackImgs[editData.getColor()]);
 
         mImgMenu.setOnTouchListener(this);
         mLayoutMenu.setOnTouchListener(this);
 
+
 //        mImgThumbtack.setImageResource(sThumbtackImgs[editData.getColor()]);
 //        mEtContent.setBackgroundColor(sBackGrounds[editData.getColor()]);
 //        mLayoutTitle.setBackgroundColor(sTitleBackGrounds[editData.getColor()]);
 //        closeMenu();
     }
-
-
 
 
     public void initData() {
@@ -197,7 +227,7 @@ public class NoteEditFragment  extends Fragment implements View.OnClickListener,
             editData.setDate(StringUtils.getDataTime("yyyy/MM/dd"));
         }
 
-        mFontSizeId= (int) SPUtils.get(getActivity(),Constants.TEXT_SIZE,Constants.TEXT_MEDIUM);
+        mFontSizeId = (int) SPUtils.get(getActivity(), Constants.TEXT_SIZE, Constants.TEXT_MEDIUM);
     }
 
 
@@ -227,65 +257,70 @@ public class NoteEditFragment  extends Fragment implements View.OnClickListener,
         closeMenu();
     }
 
-    @OnClick({R.id.menu_item_share,R.id.menu_item_text_font,R.id.menu_item_clock,R.id.menu_item_desktop})
-    public void click( FloatingActionButton menuItem)
-    {
-        String editContent=mEtContent.getText().toString();
-        switch(menuItem.getId())
-        {
-            case R.id.menu_item_share:{
+    @OnClick({R.id.menu_item_share, R.id.menu_item_text_font, R.id.menu_item_clock, R.id.menu_item_desktop, R.id.menu_item_text_edit})
+    public void click(FloatingActionButton menuItem) {
+        String editContent = mEtContent.getText().toString();
+        switch (menuItem.getId()) {
+            case R.id.menu_item_share: {
 
-                if(editContent.equals(""))
-                {
-                    Toast.makeText(getActivity(),"您还未输入内容哦",Toast.LENGTH_LONG).show();
-                }else {
-                    SystemUtils.shareNote(getActivity(),editContent);
+                if (editContent.equals("")) {
+                    Toast.makeText(getActivity(), "您还未输入内容哦", Toast.LENGTH_LONG).show();
+                } else {
+                    SystemUtils.shareNote(getActivity(), editContent);
                 }
             }
             break;
-            case R.id.menu_item_text_font:{
+            case R.id.menu_item_text_font: {
                 showTextSelectorPanel();
 
-            } break;
-            case R.id.menu_item_clock:{
-                if(!editContent.equals("")) {
+            }
+            break;
+            case R.id.menu_item_clock: {
+                if (!editContent.equals("")) {
                     setReminder(editContent);
-                }
-                else
-                {
-                    Toast.makeText(getActivity(),"亲,内容为空哦",Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(getActivity(), "亲,内容为空哦", Toast.LENGTH_LONG).show();
                 }
 
-            } break;
+            }
+            break;
 
-            case R.id.menu_item_desktop:{
+            case R.id.menu_item_desktop: {
 
-                if(!editContent.equals("")) {
+                if (!editContent.equals("")) {
                     addToDesktop(editContent);
+                } else {
+                    Toast.makeText(getActivity(), "内容为空，添加失败", Toast.LENGTH_LONG).show();
                 }
-                else
-                {
-                    Toast.makeText(getActivity(),"内容为空，添加失败",Toast.LENGTH_LONG).show();
-                }
-            } break;
+            }
+            break;
+            case R.id.menu_item_text_edit: {
+//编辑内容
+                mTvContent.setVisibility(View.GONE);
+                mEtContent.setText(mTvContent.getText());
+            }
+            break;
+
+
         }
 
 
     }
 
 
-    @OnClick({R.id.ll_font_small,R.id.ll_font_normal,R.id.ll_font_large,R.id.ll_font_super})
+    @OnClick({R.id.ll_font_small, R.id.ll_font_normal, R.id.ll_font_large, R.id.ll_font_super})
     public void ClickTextSizeSelector(View v) {
         int id = v.getId();
         getActivity().findViewById(sFontSelectorSelectionMap.get(mFontSizeId)).setVisibility(View.GONE);
         mFontSizeId = sFontSizeBtnsMap.get(id);
-        SPUtils.put(getActivity(),Constants.TEXT_SIZE,mFontSizeId);
+        SPUtils.put(getActivity(), Constants.TEXT_SIZE, mFontSizeId);
         getActivity().findViewById(sFontSelectorSelectionMap.get(mFontSizeId)).setVisibility(View.VISIBLE);
         mEtContent.setTextAppearance(getActivity(),
                 ResourceParser.TextAppearanceResources.getTexAppearanceResource(mFontSizeId));
         getActivity().findViewById(R.id.font_size_selector).setVisibility(View.GONE);
 
     }
+
     private void showTextSelectorPanel() {
         mFontSizeSelector.setVisibility(View.VISIBLE);
         getActivity().findViewById(sFontSelectorSelectionMap.get(mFontSizeId)).setVisibility(View.VISIBLE);
@@ -294,17 +329,17 @@ public class NoteEditFragment  extends Fragment implements View.OnClickListener,
     private void addToDesktop(String title) {
         Intent intent = new Intent();
         Intent shortcutIntent = new Intent(getActivity(), NoteEditActivity.class);
-       // SPUtils.put(getActivity(),DESKTOP,title);//将内容保存至share中
-        shortcutIntent.putExtra(DESKTOP,title);
+        // SPUtils.put(getActivity(),DESKTOP,title);//将内容保存至share中
+        shortcutIntent.putExtra(DESKTOP, title);
         shortcutIntent.setAction(Intent.ACTION_VIEW);
         intent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent);
-        intent.putExtra(Intent.EXTRA_SHORTCUT_NAME,title);
+        intent.putExtra(Intent.EXTRA_SHORTCUT_NAME, title);
         intent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE,
                 Intent.ShortcutIconResource.fromContext(getActivity(), R.mipmap.app_icon));
         intent.putExtra("duplicate", true);
         intent.setAction("com.android.launcher.action.INSTALL_SHORTCUT");
-        Toast.makeText(getActivity(),"已添加至桌面",Toast.LENGTH_LONG).show();
-       // showToast(R.string.info_note_enter_desktop);
+        Toast.makeText(getActivity(), "已添加至桌面", Toast.LENGTH_LONG).show();
+        // showToast(R.string.info_note_enter_desktop);
         getActivity().sendBroadcast(intent);
     }
 
@@ -312,19 +347,18 @@ public class NoteEditFragment  extends Fragment implements View.OnClickListener,
         DateTimePickerDialog d = new DateTimePickerDialog(getActivity(), System.currentTimeMillis());
         d.setOnDateTimeSetListener(new DateTimePickerDialog.OnDateTimeSetListener() {
             public void OnDateTimeSet(AlertDialog dialog, long date) {
-                setClock(date, true,str);
-               // mEditNote.setAlertDate(date, true);
+                setClock(date, true, str);
+                // mEditNote.setAlertDate(date, true);
             }
         });
         d.show();
     }
 
-    private void setClock(Long date,boolean set,String str)
-    {
+    private void setClock(Long date, boolean set, String str) {
 
         Intent intent = new Intent(getActivity(), AlarmReceiver.class);
-        intent.putExtra(Constants.ALART_CONTENT,str);
-      //  intent.setData(ContentUris.withAppendedId(Notes.CONTENT_NOTE_URI, mWorkingNote.getNoteId()));
+        intent.putExtra(Constants.ALART_CONTENT, str);
+        //  intent.setData(ContentUris.withAppendedId(Notes.CONTENT_NOTE_URI, mWorkingNote.getNoteId()));
         PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), 0, intent, 0);
         AlarmManager alarmManager = ((AlarmManager) getActivity().getSystemService(getActivity().ALARM_SERVICE));
         if (!set) {
@@ -334,6 +368,7 @@ public class NoteEditFragment  extends Fragment implements View.OnClickListener,
 
         }
     }
+
     @Override
     public boolean onTouch(View v, MotionEvent event) {
         if (MotionEvent.ACTION_DOWN == event.getAction()) {
@@ -345,6 +380,7 @@ public class NoteEditFragment  extends Fragment implements View.OnClickListener,
         }
         return true;
     }
+
     /**
      * 切换便签颜色的菜单
      */
@@ -366,8 +402,8 @@ public class NoteEditFragment  extends Fragment implements View.OnClickListener,
         setNoteProperty();
         noteDb.save(editData);
     }
-    private void setNoteProperty()
-    {
+
+    private void setNoteProperty() {
         if (editData.getId() == 0) {
             editData.setId(-1
                     * StringUtils.toInt(
@@ -379,6 +415,7 @@ public class NoteEditFragment  extends Fragment implements View.OnClickListener,
         editData.setUnixTime(StringUtils.getDataTime("yyyy-MM-dd HH:mm:ss"));
         editData.setContent(mEtContent.getText().toString());
         editData.setLevel(editData.getLevel());
+        editData.setFather(MainActivity.FATHER);
         editData.setObjectId(editData.getObjectId());
     }
 
@@ -398,54 +435,40 @@ public class NoteEditFragment  extends Fragment implements View.OnClickListener,
 
     @Override
     public void onResume() {
-        String desktopStr=getActivity().getIntent().getStringExtra(DESKTOP);
+        String desktopStr = getActivity().getIntent().getStringExtra(DESKTOP);
 
-        if(desktopStr!=null)//表明用户从桌面快捷方式点击过来的
+        if (desktopStr != null)//表明用户从桌面快捷方式点击过来的
         {
             mEtContent.setText(desktopStr);
         }
         super.onResume();
     }
 
+
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.notebook_edit_menu, menu);
+
+
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.public_menu_send:
+
+
                 if (!StringUtils.isEmpty(mEtContent.getText().toString())) {
-                    save();
-
-                    if(whereFrom==0) {//表明用户是从主机面的加号按钮跳转过来
-                        editData.postNoteToServer(getActivity(), new OnResponseListener() {
-                            @Override
-                            public void onResponse(Response response) {
-                                if (!response.isSucces()) {
-                                    Snackbar.make(mImgGreen, "保存至服务器端失败，暂保存在本地", Snackbar.LENGTH_LONG).show();
-                                } else {
-                                    getActivity().finish();
-                                }
-                            }
-                        });
-                    }else if(whereFrom==1)//表明用户是从主界面的item跳转过来，此时只需更新即可
-                    {
-                        editData.updateNoteInServe(getActivity(), editData.getObjectId(), new OnResponseListener() {
-                            @Override
-                            public void onResponse(Response response) {
-                                getActivity().finish();
-                                if (!response.isSucces()) {
-//                                    Snackbar.make(mImgGreen, "保存至服务器端失败"+response.getMsg(), Snackbar.LENGTH_LONG).show();
-                                } else {
-//                                    getActivity().finish();
-                                }
-                            }
-                        });
+                    if (mTvContent.getVisibility() == View.VISIBLE) {
+                        getActivity().finish();
                     }
-
+                    save();
+                    mTvContent.setVisibility(View.VISIBLE);
+                    mTvContent.setText(mEtContent.getText().toString());
+                } else {
+                    Toast.makeText(getActivity(), "亲,内容为空哦", Toast.LENGTH_LONG).show();
                 }
+
 
                 break;
         }
@@ -453,23 +476,23 @@ public class NoteEditFragment  extends Fragment implements View.OnClickListener,
     }
 
 
-
     public boolean onBackPressed() {
-        if (isNewNote) {
-            final String content = mEtContent.getText().toString();
+        final String content = mEtContent.getText().toString();
+        if (mTvContent.getVisibility() == View.GONE) {
             if (!TextUtils.isEmpty(content)) {
-                DialogHelp.getConfirmDialog(getActivity(), "是否保存为草稿?", new DialogInterface.OnClickListener() {
+                DialogHelp.getConfirmDialog(getActivity(), "是否保存?", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                      //
-                        new SystemUtils(getActivity()).setNoteDraft(content+"[草稿]");
-                        getActivity().finish();
+                        //
+                        save();
+                        mTvContent.setVisibility(View.VISIBLE);
+                        mTvContent.setText(content);
                     }
                 }, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         new SystemUtils(getActivity()).setNoteDraft("");
-                        getActivity().finish();
+                        mTvContent.setVisibility(View.VISIBLE);
                     }
                 }).show();
                 return true;
@@ -482,14 +505,13 @@ public class NoteEditFragment  extends Fragment implements View.OnClickListener,
     /**
      * notice :inner Broadcast receiver must be static ( to be registered through Manifest)
      * or Non-static broadcast receiver must be registered and unregistered inside the Parent class
-     *
      */
     public static class AlarmReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
             intent.setClass(context, AlarmAlertActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-           // Log.i("alarm content",intent.getStringExtra(Constants.ALART_CONTENT));
+            // Log.i("alarm content",intent.getStringExtra(Constants.ALART_CONTENT));
             //intent.putExtra(Constants.ALART_CONTENT,intent.getStringExtra(Constants.ALART_CONTENT));
             context.startActivity(intent);
         }

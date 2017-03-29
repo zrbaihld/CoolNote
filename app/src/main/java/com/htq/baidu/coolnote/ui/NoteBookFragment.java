@@ -10,6 +10,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -107,6 +108,7 @@ public class NoteBookFragment extends Fragment implements
     public void onResume() {
         super.onResume();
         ((MainActivity) getActivity()).fab.showMenu(true);
+        initData();
         //setListCanPull();
     }
 
@@ -124,12 +126,17 @@ public class NoteBookFragment extends Fragment implements
         bundle.putInt(NoteEditFragment.NOTE_FROMWHERE_KEY,
                 NoteEditFragment.NOTEBOOK_ITEM);
         bundle.putSerializable(NoteEditFragment.NOTE_KEY, datas.get(position));
+        NotebookData data = datas.get(position);
+        if (TextUtils.isEmpty(data.getContent())) {
+            MainActivity.FATHER = data.getFather() + "/" + data.getClassified();
+            aty.setTitleChild(MainActivity.FATHER);
+            initData();
 
-        Intent intent = new Intent(getActivity(), NoteEditActivity.class);
-        intent.putExtra(Constants.BUNDLE_KEY_ARGS, bundle);
-        startActivity(intent);
-
-
+        } else {
+            Intent intent = new Intent(getActivity(), NoteEditActivity.class);
+            intent.putExtra(Constants.BUNDLE_KEY_ARGS, bundle);
+            startActivity(intent);
+        }
     }
 
     /*****************************
@@ -145,7 +152,7 @@ public class NoteBookFragment extends Fragment implements
             datas = new ArrayList<>();
         }
         datas.clear();
-        datas.addAll(noteDb.query(-1));
+        datas.addAll(noteDb.queryString(MainActivity.FATHER));
         // 查询操作，忽略耗时
         if (datas != null) {
             adapter = new NotebookAdapter(aty, datas);
@@ -153,8 +160,9 @@ public class NoteBookFragment extends Fragment implements
         Log.e("exce", "datas  " + datas.size());
         for (NotebookData data : datas) {
             Log.e("exce", "data  " + data.getClassified());
+            Log.e("exce", "data.getLevel()  " + data.getLevel());
         }
-        adapter.notifyDataSetChanged();
+        mGrid.setAdapter(adapter);
     }
 
 
@@ -245,7 +253,7 @@ public class NoteBookFragment extends Fragment implements
         mGrid.setSelection(0);
         setSwipeRefreshLoadingState();
 //        getServerData();
-        datas = noteDb.query(aty.level);
+        datas = noteDb.queryString(MainActivity.FATHER);
         adapter.refurbishData(datas);
         noteDb.reset(datas);//将结果重置到数据库
 //        for(int i=0;i<datas.size();i++)
@@ -256,8 +264,8 @@ public class NoteBookFragment extends Fragment implements
 
         //refurbish();
         setSwipeRefreshLoadedState();
-        Snackbar.make(mGrid, "已从服务器端同步数据！", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show();
+//        Snackbar.make(mGrid, "已从服务器端同步数据！", Snackbar.LENGTH_LONG)
+//                .setAction("Action", null).show();
     }
 
     /**
@@ -292,7 +300,7 @@ public class NoteBookFragment extends Fragment implements
      * 使用自带缓存功能的网络请求，防止多次刷新造成的流量损耗以及服务器压力
      */
     private void refurbish() {
-        datas = noteDb.query(aty.level);
+        datas = noteDb.queryString(MainActivity.FATHER);
         if (datas != null) {
             if (adapter != null) {
                 adapter.refurbishData(datas);
@@ -338,11 +346,26 @@ public class NoteBookFragment extends Fragment implements
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+
             new SystemUtils(getActivity()).setBoolean("isTran", true);
             mGrid.setAlpha(0.55f);
             return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void back() {
+        String[] paths = MainActivity.FATHER.split("/");
+        MainActivity.FATHER = "";
+        Log.e("exce", "paths.length  " + paths.length);
+        for (int i = 1; i < paths.length - 1; i++) {
+            Log.e("exce", "paths  " + paths[i]);
+            MainActivity.FATHER = MainActivity.FATHER + "/" + paths[i];
+        }
+        if ("/".equals(MainActivity.FATHER))
+            MainActivity.FATHER="";
+        aty.setTitleChild(MainActivity.FATHER);
+        initData();
     }
 }
