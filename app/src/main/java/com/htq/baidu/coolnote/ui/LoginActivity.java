@@ -48,7 +48,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-     //   requestWindowFeature(Window.FEATURE_NO_TITLE);
+        //   requestWindowFeature(Window.FEATURE_NO_TITLE);
         /*set it to be full screen*/
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -59,15 +59,15 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
 
-    private void initDrawableSize()
-    {
-        Drawable accountDraw=getResources().getDrawable(R.drawable.login_icon_account);
-        accountDraw.setBounds(0,0,45,45);
-        Drawable passwordDraw=getResources().getDrawable(R.drawable.login_icon_password);
-        passwordDraw.setBounds(0,0,45,45);
-        loginName.setCompoundDrawables(accountDraw,null,null,null);
-        loginPwd.setCompoundDrawables(passwordDraw,null,null,null);
+    private void initDrawableSize() {
+        Drawable accountDraw = getResources().getDrawable(R.drawable.login_icon_account);
+        accountDraw.setBounds(0, 0, 45, 45);
+        Drawable passwordDraw = getResources().getDrawable(R.drawable.login_icon_password);
+        passwordDraw.setBounds(0, 0, 45, 45);
+        loginName.setCompoundDrawables(accountDraw, null, null, null);
+        loginPwd.setCompoundDrawables(passwordDraw, null, null, null);
     }
+
     @OnClick({R.id.btn_login, R.id.btn_register})
     public void onClick(View v) {
         switch (v.getId()) {
@@ -81,11 +81,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
 
-
-
+    /**
+     * 登录
+     */
     private void login() {
-        final String name=loginName.getText().toString();
-        final String pwd=loginPwd.getText().toString();
+        final String name = loginName.getText().toString();
+        final String pwd = loginPwd.getText().toString();
         final ProgressDialog progress = new ProgressDialog(
                 LoginActivity.this);
         progress.setMessage("正在登陆...");
@@ -96,16 +97,16 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         user.setUsername(name);
         user.setPassword(MD5Util.MD5(pwd));
 
-       // user.setPassword(pwd);
-    //    Snackbar.make(loginBtn,"登录成功！",Snackbar.LENGTH_SHORT).show();
+        // user.setPassword(pwd);
+        //    Snackbar.make(loginBtn,"登录成功！",Snackbar.LENGTH_SHORT).show();
         user.login(this, new SaveListener() {
             @Override
             public void onSuccess() {
                 progress.dismiss();
-              //  Snackbar.make(loginBtn,"登录成功！",Snackbar.LENGTH_SHORT).show();
+                //  Snackbar.make(loginBtn,"登录成功！",Snackbar.LENGTH_SHORT).show();
                 //将用户信息保存至本地
-                SPUtils.put(LoginActivity.this,"user_name",name);
-                SPUtils.put(LoginActivity.this,"pwd",MD5Util.MD5(pwd));
+                SPUtils.put(LoginActivity.this, "user_name", name);
+                SPUtils.put(LoginActivity.this, "pwd", MD5Util.MD5(pwd));
                 User user2;
                 user2 = BmobUser.getCurrentUser(LoginActivity.this, User.class);
                 //将登陆信息保存本地
@@ -117,22 +118,28 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             @Override
             public void onFailure(int code, String msg) {
                 progress.dismiss();
-                Toast.makeText(LoginActivity.this,msg,Toast.LENGTH_LONG).show();
-               // Snackbar.make(loginBtn,"登录失败！",Snackbar.LENGTH_SHORT).show();
+                Toast.makeText(LoginActivity.this, msg, Toast.LENGTH_LONG).show();
+                // Snackbar.make(loginBtn,"登录失败！",Snackbar.LENGTH_SHORT).show();
             }
         });
 
     }
 
+    /**
+     * 前往主界面
+     */
     private void goToHomeActivity() {
 
-        Intent intent=new Intent(LoginActivity.this,MainActivity.class);
+        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
         startActivity(intent);
         this.finish();
     }
 
+    /**
+     * 注册
+     */
     private void goToRegisterActivity() {
-        Intent intent=new Intent(LoginActivity.this,RegisterActivity.class);
+        Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
         startActivity(intent);
     }
 }

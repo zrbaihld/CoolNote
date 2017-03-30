@@ -19,6 +19,18 @@
             android:id="@+id/item_note_tv_date"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:gravity="center"
+            android:textColor="#666"
+            android:textSize="12sp"/>
+
+        <TextView
+            android:id="@+id/item_note_tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:ellipsize="end"
+            android:maxLength="5"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
             android:gravity="center"
@@ -44,6 +56,7 @@
             android:id="@+id/item_note_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:autoLink="all"
             android:background="@color/white"
             android:gravity="top"
             android:maxLines="5"
@@ -70,6 +83,20 @@
             android:textColor="#333"
             android:textSize="24sp"
             />
+
+        <ImageView
+            android:id="@+id/item_note_img_back"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            android:gravity="center"
+            android:maxLines="2"
+            android:scaleType="centerCrop"
+            android:singleLine="false"
+            android:textColor="#333"
+            android:textSize="24sp"
+            />
+
     </RelativeLayout>
 
 

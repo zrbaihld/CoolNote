@@ -33,10 +33,6 @@
                 android:id="@+id/nav_share"
                 android:icon="@drawable/ic_menu_share"
                 android:title="@string/share_app" />
-            <item
-                android:id="@+id/nav_about"
-                android:icon="@drawable/about"
-                android:title="@string/about_app" />
          </menu>
  </item>
     <item android:title="">

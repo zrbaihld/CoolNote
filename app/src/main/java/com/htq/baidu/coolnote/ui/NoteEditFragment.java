@@ -47,6 +47,7 @@ import com.htq.baidu.coolnote.utils.SPUtils;
 import com.htq.baidu.coolnote.utils.StringUtils;
 import com.htq.baidu.coolnote.utils.SystemUtils;
 import com.htq.baidu.coolnote.widget.TextViewFixTouchConsume;
+import com.htq.baidu.coolnote.widget.TextViewFixTouchConsume2;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -62,9 +63,15 @@ import butterknife.OnClick;
 public class NoteEditFragment extends Fragment implements View.OnClickListener, View.OnTouchListener {
     @BindView(R.id.note_detail_edit)
     EditText mEtContent;
+    @BindView(R.id.note_title_edit)
+    EditText mEtTitle;
+
 
     @BindView(R.id.note_detail_tv)
     TextView mTvContent;
+    @BindView(R.id.note_detail_bg)
+    TextView tv_background;
+
 
     @BindView(R.id.note_detail_tv_date)
     TextView mTvDate;
@@ -162,7 +169,11 @@ public class NoteEditFragment extends Fragment implements View.OnClickListener, 
         return rootView;
     }
 
-
+    /**
+     * 初始化界面
+     *
+     * @param view
+     */
     private void initView(View view) {
 
         mImgGreen.setOnClickListener(this);
@@ -178,26 +189,20 @@ public class NoteEditFragment extends Fragment implements View.OnClickListener, 
 
         mEtContent.setBackgroundColor(sBackGrounds[editData.getColor()]);
 
-        mTvContent.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
-        mTvContent.setSingleLine(false);
-        mTvContent.setHorizontallyScrolling(false);
-
-        mTvContent.setFocusable(false);
-        mTvContent.setClickable(false);
-        mTvContent.setLongClickable(false);
 
         mTvContent.setBackgroundColor(sBackGrounds[editData.getColor()]);
+        tv_background.setBackgroundColor(sBackGrounds[editData.getColor()]);
 
-        mTvContent.setMovementMethod(
-                TextViewFixTouchConsume.LocalLinkMovementMethod.getInstance()
-        );
+        mEtContent.setText(editData.getContent());
 
+        mEtTitle.setText(editData.getTitle());
 
         if (TextUtils.isEmpty(editData.getContent())) {
-            mEtContent.setText(Html.fromHtml(editData.getContent()).toString());
             mTvContent.setVisibility(View.GONE);
+            mEtContent.setVisibility(View.VISIBLE);
         } else {
-            mTvContent.setText(Html.fromHtml(editData.getContent()).toString());
+            mEtContent.setVisibility(View.GONE);
+            mTvContent.setText(editData.getContent());
         }
         mTvDate.setText(editData.getDate());
 
@@ -215,6 +220,9 @@ public class NoteEditFragment extends Fragment implements View.OnClickListener, 
 //        closeMenu();
     }
 
+    /**
+     * 初始化数据
+     */
 
     public void initData() {
         noteDb = new NoteDatabase(getActivity());
@@ -228,9 +236,19 @@ public class NoteEditFragment extends Fragment implements View.OnClickListener, 
         }
 
         mFontSizeId = (int) SPUtils.get(getActivity(), Constants.TEXT_SIZE, Constants.TEXT_MEDIUM);
+        mEtContent.setTextAppearance(getActivity(),
+                ResourceParser.TextAppearanceResources.getTexAppearanceResource(mFontSizeId));
+
+        mTvContent.setTextAppearance(getActivity(),
+                ResourceParser.TextAppearanceResources.getTexAppearanceResource(mFontSizeId));
+
     }
 
-
+    /**
+     * 点击操作 颜色的变换
+     *
+     * @param v
+     */
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -257,6 +275,11 @@ public class NoteEditFragment extends Fragment implements View.OnClickListener, 
         closeMenu();
     }
 
+    /**
+     * 红色加号里面item的点击操作
+     *
+     * @param menuItem
+     */
     @OnClick({R.id.menu_item_share, R.id.menu_item_text_font, R.id.menu_item_clock, R.id.menu_item_desktop, R.id.menu_item_text_edit})
     public void click(FloatingActionButton menuItem) {
         String editContent = mEtContent.getText().toString();
@@ -297,17 +320,20 @@ public class NoteEditFragment extends Fragment implements View.OnClickListener, 
             case R.id.menu_item_text_edit: {
 //编辑内容
                 mTvContent.setVisibility(View.GONE);
+                mEtContent.setVisibility(View.VISIBLE);
                 mEtContent.setText(mTvContent.getText());
             }
             break;
 
 
         }
-
-
     }
 
-
+    /**
+     * 字体大小的点击操作
+     *
+     * @param v
+     */
     @OnClick({R.id.ll_font_small, R.id.ll_font_normal, R.id.ll_font_large, R.id.ll_font_super})
     public void ClickTextSizeSelector(View v) {
         int id = v.getId();
@@ -315,17 +341,30 @@ public class NoteEditFragment extends Fragment implements View.OnClickListener, 
         mFontSizeId = sFontSizeBtnsMap.get(id);
         SPUtils.put(getActivity(), Constants.TEXT_SIZE, mFontSizeId);
         getActivity().findViewById(sFontSelectorSelectionMap.get(mFontSizeId)).setVisibility(View.VISIBLE);
+
         mEtContent.setTextAppearance(getActivity(),
                 ResourceParser.TextAppearanceResources.getTexAppearanceResource(mFontSizeId));
+
+        mTvContent.setTextAppearance(getActivity(),
+                ResourceParser.TextAppearanceResources.getTexAppearanceResource(mFontSizeId));
+
         getActivity().findViewById(R.id.font_size_selector).setVisibility(View.GONE);
 
     }
 
+    /**
+     * 显示当前的字号
+     */
     private void showTextSelectorPanel() {
         mFontSizeSelector.setVisibility(View.VISIBLE);
         getActivity().findViewById(sFontSelectorSelectionMap.get(mFontSizeId)).setVisibility(View.VISIBLE);
     }
 
+    /**
+     * 添加到桌面
+     *
+     * @param title
+     */
     private void addToDesktop(String title) {
         Intent intent = new Intent();
         Intent shortcutIntent = new Intent(getActivity(), NoteEditActivity.class);
@@ -343,6 +382,11 @@ public class NoteEditFragment extends Fragment implements View.OnClickListener, 
         getActivity().sendBroadcast(intent);
     }
 
+    /**
+     * 设置闹钟 弹出时间选择
+     *
+     * @param str
+     */
     private void setReminder(final String str) {
         DateTimePickerDialog d = new DateTimePickerDialog(getActivity(), System.currentTimeMillis());
         d.setOnDateTimeSetListener(new DateTimePickerDialog.OnDateTimeSetListener() {
@@ -354,6 +398,13 @@ public class NoteEditFragment extends Fragment implements View.OnClickListener, 
         d.show();
     }
 
+    /**
+     * 设置闹钟
+     *
+     * @param date
+     * @param set
+     * @param str
+     */
     private void setClock(Long date, boolean set, String str) {
 
         Intent intent = new Intent(getActivity(), AlarmReceiver.class);
@@ -369,6 +420,13 @@ public class NoteEditFragment extends Fragment implements View.OnClickListener, 
         }
     }
 
+    /**
+     * 点击是否打开切换便签的点击事件
+     *
+     * @param v
+     * @param event
+     * @return
+     */
     @Override
     public boolean onTouch(View v, MotionEvent event) {
         if (MotionEvent.ACTION_DOWN == event.getAction()) {
@@ -403,6 +461,9 @@ public class NoteEditFragment extends Fragment implements View.OnClickListener, 
         noteDb.save(editData);
     }
 
+    /**
+     * 封装NotebookData
+     */
     private void setNoteProperty() {
         if (editData.getId() == 0) {
             editData.setId(-1
@@ -414,6 +475,7 @@ public class NoteEditFragment extends Fragment implements View.OnClickListener, 
 
         editData.setUnixTime(StringUtils.getDataTime("yyyy-MM-dd HH:mm:ss"));
         editData.setContent(mEtContent.getText().toString());
+        editData.setTitle(mEtTitle.getText().toString());
         editData.setLevel(editData.getLevel());
         editData.setFather(MainActivity.FATHER);
         editData.setObjectId(editData.getObjectId());
@@ -444,7 +506,12 @@ public class NoteEditFragment extends Fragment implements View.OnClickListener, 
         super.onResume();
     }
 
-
+    /**
+     * 加载标题栏左上角的样式
+     *
+     * @param menu
+     * @param inflater
+     */
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.notebook_edit_menu, menu);
@@ -452,6 +519,12 @@ public class NoteEditFragment extends Fragment implements View.OnClickListener, 
 
     }
 
+    /**
+     * 标题栏右上角的点击操作
+     *
+     * @param item
+     * @return
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -461,10 +534,13 @@ public class NoteEditFragment extends Fragment implements View.OnClickListener, 
                 if (!StringUtils.isEmpty(mEtContent.getText().toString())) {
                     if (mTvContent.getVisibility() == View.VISIBLE) {
                         getActivity().finish();
+                    } else {
+                        save();
+                        mTvContent.setVisibility(View.VISIBLE);
+                        mEtContent.setVisibility(View.GONE);
+                        mTvContent.setText(mEtContent.getText().toString());
                     }
-                    save();
-                    mTvContent.setVisibility(View.VISIBLE);
-                    mTvContent.setText(mEtContent.getText().toString());
+
                 } else {
                     Toast.makeText(getActivity(), "亲,内容为空哦", Toast.LENGTH_LONG).show();
                 }
@@ -475,7 +551,11 @@ public class NoteEditFragment extends Fragment implements View.OnClickListener, 
         return true;
     }
 
-
+    /**
+     * 点击返回时候进行判断操作
+     *
+     * @return
+     */
     public boolean onBackPressed() {
         final String content = mEtContent.getText().toString();
         if (mTvContent.getVisibility() == View.GONE) {
@@ -486,6 +566,7 @@ public class NoteEditFragment extends Fragment implements View.OnClickListener, 
                         //
                         save();
                         mTvContent.setVisibility(View.VISIBLE);
+                        mEtContent.setVisibility(View.GONE);
                         mTvContent.setText(content);
                     }
                 }, new DialogInterface.OnClickListener() {
@@ -493,6 +574,7 @@ public class NoteEditFragment extends Fragment implements View.OnClickListener, 
                     public void onClick(DialogInterface dialogInterface, int i) {
                         new SystemUtils(getActivity()).setNoteDraft("");
                         mTvContent.setVisibility(View.VISIBLE);
+                        mEtContent.setVisibility(View.GONE);
                     }
                 }).show();
                 return true;
@@ -506,6 +588,7 @@ public class NoteEditFragment extends Fragment implements View.OnClickListener, 
      * notice :inner Broadcast receiver must be static ( to be registered through Manifest)
      * or Non-static broadcast receiver must be registered and unregistered inside the Parent class
      */
+
     public static class AlarmReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {

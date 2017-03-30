@@ -8,11 +8,34 @@
                 android:paddingLeft="2dp"
                 android:paddingRight="2dp">
 
+    <TextView
+        android:id="@+id/note_detail_bg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="50dp"
+        android:autoLink="email|phone|web"
+        android:gravity="top"
+        android:hint="@null"
+        android:singleLine="false"
+        android:textColor="#333"/>
+
+    <EditText
+        android:id="@+id/note_title_edit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="top"
+        android:layout_marginTop="50dp"
+        android:hint="请输入标题"
+        android:singleLine="true"
+        android:textColor="#333"
+        android:textSize="16sp"
+        />
+
     <EditText
         android:id="@+id/note_detail_edit"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="50dp"
+        android:layout_below="@+id/note_title_edit"
         android:autoLink="email|phone|web"
         android:gravity="top"
         android:hint="@null"
@@ -23,13 +46,14 @@
     <TextView
         android:id="@+id/note_detail_tv"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="50dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/note_title_edit"
         android:autoLink="email|phone|web"
         android:gravity="top"
         android:hint="@null"
         android:singleLine="false"
         android:textColor="#333"/>
+
 
     <include
         android:id="@+id/note_detail_menu"

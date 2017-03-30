@@ -118,7 +118,13 @@ public class NoteBookFragment extends Fragment implements
         super.onDestroy();
     }
 
-
+    /**
+     * HTQDragGridView 列表的item点击操作
+     * @param parent
+     * @param view
+     * @param position
+     * @param id
+     */
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position,
                             long id) {
@@ -127,15 +133,18 @@ public class NoteBookFragment extends Fragment implements
                 NoteEditFragment.NOTEBOOK_ITEM);
         bundle.putSerializable(NoteEditFragment.NOTE_KEY, datas.get(position));
         NotebookData data = datas.get(position);
-        if (TextUtils.isEmpty(data.getContent())) {
-            MainActivity.FATHER = data.getFather() + "/" + data.getClassified();
-            aty.setTitleChild(MainActivity.FATHER);
-            initData();
-
-        } else {
+        Log.e("exce", "getContent  " + data.getContent());
+        Log.e("exce", "getClassified  " + data.getClassified());
+        if (!TextUtils.isEmpty(data.getContent())) {
             Intent intent = new Intent(getActivity(), NoteEditActivity.class);
             intent.putExtra(Constants.BUNDLE_KEY_ARGS, bundle);
             startActivity(intent);
+        } else if (!TextUtils.isEmpty(data.getClassified())) {
+            MainActivity.FATHER = data.getFather() + "/" + data.getClassified();
+            aty.setTitleChild(MainActivity.FATHER);
+            initData();
+        } else if (!TextUtils.isEmpty(data.getImgpath())) {
+
         }
     }
 
@@ -143,7 +152,9 @@ public class NoteBookFragment extends Fragment implements
      * initialization method
      ***************************/
 
-
+    /**
+     * 加载数据
+     */
     public void initData() {
         if (noteDb == null) {
             noteDb = new NoteDatabase(aty);
@@ -165,7 +176,10 @@ public class NoteBookFragment extends Fragment implements
         mGrid.setAdapter(adapter);
     }
 
-
+    /**
+     * 控件的初始化操作
+     * @param view
+     */
     public void initView(View view) {
         mGrid.setAdapter(adapter);
         mGrid.setOnItemClickListener(this);
@@ -243,7 +257,9 @@ public class NoteBookFragment extends Fragment implements
     /*********************************
      * GridView method
      ******************************/
-
+    /**
+     * 下拉刷新的操作
+     */
     @Override
     public void onRefresh() {//同步数据,先从服务器端获取数据，然后重置到数据库中
         if (mState == STATE_REFRESH) {
@@ -331,12 +347,22 @@ public class NoteBookFragment extends Fragment implements
         //  updateEmptyView();
     }
 
+    /**
+     * 加载标题浪左边的按钮样式
+     * @param menu
+     * @param inflater
+     */
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         // Inflate the menu; this adds items to the action bar if it is present.
         inflater.inflate(R.menu.main, menu);
     }
 
+    /**
+     * 标题栏左边按钮点击操作
+     * @param item
+     * @return
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -355,6 +381,9 @@ public class NoteBookFragment extends Fragment implements
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * 分类返回上层操作
+     */
     public void back() {
         String[] paths = MainActivity.FATHER.split("/");
         MainActivity.FATHER = "";
@@ -364,7 +393,7 @@ public class NoteBookFragment extends Fragment implements
             MainActivity.FATHER = MainActivity.FATHER + "/" + paths[i];
         }
         if ("/".equals(MainActivity.FATHER))
-            MainActivity.FATHER="";
+            MainActivity.FATHER = "";
         aty.setTitleChild(MainActivity.FATHER);
         initData();
     }

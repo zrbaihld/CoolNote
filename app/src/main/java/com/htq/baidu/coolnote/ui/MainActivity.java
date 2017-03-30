@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
@@ -16,6 +17,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -61,6 +63,8 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -124,6 +128,9 @@ public class MainActivity extends AppCompatActivity
 
         }
     }
+/**
+ * 设置界面标题
+ */
 
     public void setTitleChild(CharSequence title) {
         if (!TextUtils.isEmpty(title)) {
@@ -134,6 +141,9 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    /**
+     * 初始化ui
+     */
     private void initUi() {
         DisplayMetrics metric = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metric);
@@ -141,7 +151,6 @@ public class MainActivity extends AppCompatActivity
         mScreenHeight = metric.heightPixels;
 
         exitBtn = findViewById(R.id.floating_action_menu);
-
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -156,20 +165,6 @@ public class MainActivity extends AppCompatActivity
         toolbar.setTitle(s_title);
 
         fab = (FloatingActionMenu) findViewById(R.id.floating_action_menu);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                //    toggleActionButton();
-//                Intent intent = new Intent(MainActivity.this, NoteEditActivity.class);
-//                Bundle bundle = new Bundle();
-//                bundle.putInt(NoteEditFragment.NOTE_FROMWHERE_KEY,
-//                        NoteEditFragment.QUICK_DIALOG);
-//                intent.putExtra(Constants.BUNDLE_KEY_ARGS, bundle);
-//                startActivity(intent);
-//            }
-//        });
-//        toolbar.setNavigationIcon(R.mipmap.ic_launcher);
-
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -189,6 +184,9 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+    /**
+     * 头像点击跳转到用户资料界面
+     */
     private View.OnClickListener headIconOnTouchListener = new View.OnClickListener() {
         @Override
         public void onClick(View vt) {
@@ -199,6 +197,9 @@ public class MainActivity extends AppCompatActivity
         }
     };
 
+    /**
+     * 换肤
+     */
     private void initBgPic() {
 
         SystemUtils systemUtils = new SystemUtils(this);
@@ -212,6 +213,9 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    /**
+     * 设置头像
+     */
     private void initHead() {
 
         User.initDefaultAvatar(this, headIcon);
@@ -219,6 +223,9 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+    /**
+     * 加载Fragment
+     */
     private void initMainFragment() {
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
@@ -229,6 +236,10 @@ public class MainActivity extends AppCompatActivity
 
     private boolean isnote = true;
 
+    /**
+     * 变换Fragment
+     * @param fragment
+     */
     protected void changeFragment(Fragment fragment) {
 
         FragmentManager fm = getSupportFragmentManager();
@@ -239,14 +250,18 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-
+    /**
+     * 判断是否是第一次运行app 然后初始化数据库
+     */
     private void initIntruduceData() {
         NoteDatabase noteDb = new NoteDatabase(MainActivity.this);
         noteDb.insertIntroduce(this);
         new SystemUtils(MainActivity.this).set("isFirstUse", "false");
     }
 
-
+    /**
+     * 点击返回的时候判断
+     */
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -274,7 +289,11 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-
+    /**
+     * 侧边栏的点击操作
+     * @param item
+     * @return
+     */
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -302,13 +321,15 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_share) {
             SystemUtils.shareApp(this);
 
-        } else if (id == R.id.nav_about) {
-            isnote = false;
-            setTitle("关于应用");
-            AboutAppFragment aboutAppFragment = new AboutAppFragment();
-            changeFragment(aboutAppFragment);
-            fab.hideMenu(true);
-        } else if (id == R.id.nav_exit) {
+        }
+//        else if (id == R.id.nav_about) {
+//            isnote = false;
+//            setTitle("关于应用");
+//            AboutAppFragment aboutAppFragment = new AboutAppFragment();
+//            changeFragment(aboutAppFragment);
+//            fab.hideMenu(true);
+//        }
+        else if (id == R.id.nav_exit) {
             finish();
             System.exit(0);
         }
@@ -317,7 +338,10 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-
+    /**
+     * 新建的点击操作
+     * @param menuItem
+     */
     @OnClick({R.id.menu_item_text_font, R.id.menu_item_clock, R.id.menu_item_pic})
     public void click(FloatingActionButton menuItem) {
         switch (menuItem.getId()) {
@@ -369,6 +393,10 @@ public class MainActivity extends AppCompatActivity
     private NotebookData editData;
     private NoteDatabase noteDb;
 
+    /**
+     * 保存到数据库
+     * @param classis
+     */
     private void save(String classis) {
         editData = new NotebookData();
         if (noteDb == null) {
@@ -380,6 +408,10 @@ public class MainActivity extends AppCompatActivity
         noteBookFragment.initData();
     }
 
+    /**
+     * 封装NotebookData的操作
+     * @param classis
+     */
     private void setNoteProperty(String classis) {
         if (editData.getId() == 0) {
             editData.setId(-1
@@ -391,10 +423,17 @@ public class MainActivity extends AppCompatActivity
         }
         String userId = AccountUtils.getUserId(this);
         editData.setUserId(userId);
-        editData.setClassified(classis);
+
         editData.setUnixTime(StringUtils.getDataTime("yyyy-MM-dd HH:mm:ss"));
         editData.setFather(FATHER);
         editData.setObjectId(editData.getObjectId());
+        if (TextUtils.isEmpty(classis)) {
+            editData.setImgpath(path);
+        } else {
+            editData.setClassified(classis);
+        }
+
+
     }
 
 
@@ -406,6 +445,9 @@ public class MainActivity extends AppCompatActivity
 
     public String filePath = "";
 
+    /**
+     * 显示选择相册还是相机的pop
+     */
     private void showAvatarPop() {
         View view = LayoutInflater.from(this).inflate(R.layout.pop_showavator,
                 null);
@@ -479,10 +521,12 @@ public class MainActivity extends AppCompatActivity
 
         Log.e("exce", " avatorPop.showAtLocation ");
     }
+
     /**
-     * @Title: startImageAction
+     * 跳转到图片裁剪的界面
      * @return void
-     * @throws
+     * @throws跳转到
+     * @Title: startImageAction
      */
     private void startImageAction(Uri uri, int outputX, int outputY,
                                   int requestCode, boolean isCrop) {
@@ -512,6 +556,12 @@ public class MainActivity extends AppCompatActivity
     boolean isFromCamera = false;// 区分拍照旋转
     int degree = 0;
 
+    /**
+     * activity自带的跳转接收返回数据 用来接受相册 和相机 还有裁剪完以后传回来的数据
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         // TODO Auto-generated method stub
@@ -521,7 +571,7 @@ public class MainActivity extends AppCompatActivity
                 if (resultCode == RESULT_OK) {
                     if (!Environment.getExternalStorageState().equals(
                             Environment.MEDIA_MOUNTED)) {
-                        Snackbar.make(exitBtn,"SD卡不可用",Snackbar.LENGTH_LONG).show();
+                        Snackbar.make(exitBtn, "SD卡不可用", Snackbar.LENGTH_LONG).show();
                         return;
                     }
                     isFromCamera = true;
@@ -543,7 +593,7 @@ public class MainActivity extends AppCompatActivity
                 if (resultCode == RESULT_OK) {
                     if (!Environment.getExternalStorageState().equals(
                             Environment.MEDIA_MOUNTED)) {
-                        Snackbar.make(exitBtn,"SD卡不可用",Snackbar.LENGTH_LONG).show();
+                        Snackbar.make(exitBtn, "SD卡不可用", Snackbar.LENGTH_LONG).show();
                         return;
                     }
                     isFromCamera = false;
@@ -551,7 +601,7 @@ public class MainActivity extends AppCompatActivity
                     startImageAction(uri, 200, 200,
                             BmobConstants.REQUESTCODE_UPLOADAVATAR_CROP, true);
                 } else {
-                    Snackbar.make(exitBtn,"照片获取失败",Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(exitBtn, "照片获取失败", Snackbar.LENGTH_LONG).show();
 
                 }
 
@@ -563,11 +613,11 @@ public class MainActivity extends AppCompatActivity
                 }
                 if (data == null) {
                     // Toast.makeText(this, , Toast.LENGTH_SHORT).show();
-                    Snackbar.make(exitBtn,"取消选择",Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(exitBtn, "取消选择", Snackbar.LENGTH_LONG).show();
                     return;
                 } else {
                     saveCropAvator(data);
-                    SPUtils.put(this,"isSetAvatar",true);
+                    SPUtils.put(this, "isSetAvatar", true);
 
                 }
 
@@ -609,19 +659,18 @@ public class MainActivity extends AppCompatActivity
 
 //                PhotoUtil.saveBitmap(BmobConstants.MyAvatarDir, filename,
 //                        bitmap, true);
-                PhotoUtil.saveBitmap(BmobConstants.MyAvatarDir, avatarFile,
+                PhotoUtil.saveBitmap(BmobConstants.MyAvatarDir, filename,
                         bitmap, true);
                 Log.e("exce", " saveBitmap ");
-                ImageView image= (ImageView) findViewById(R.id.test);
-                image.setImageBitmap(bitmap);
+                save("");
                 // 上传头像
                 if (bitmap != null && bitmap.isRecycled()) {
                     bitmap.recycle();
                 }
-            }else {
+            } else {
                 Log.e("exce", " bitmap != null ");
             }
-        }else {
+        } else {
             Log.e("exce", " extras != null ");
         }
     }

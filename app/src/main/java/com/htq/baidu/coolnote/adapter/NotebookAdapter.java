@@ -1,6 +1,8 @@
 package com.htq.baidu.coolnote.adapter;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.provider.CalendarContract;
@@ -24,6 +26,8 @@ import com.htq.baidu.coolnote.utils.SystemUtils;
 import com.htq.baidu.coolnote.widget.HTQDragGridView;
 import com.htq.baidu.coolnote.widget.TextViewFixTouchConsume;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -86,7 +90,9 @@ public class NotebookAdapter extends BaseAdapter implements HTQDragGridView.Drag
     static class ViewHolder {
         TextView date;
         TextView note_class;
+        TextView tv_title;
         ImageView state;
+        ImageView img_back;
         ImageView thumbtack;
         View titleBar;
         TextViewFixTouchConsume content;
@@ -104,7 +110,9 @@ public class NotebookAdapter extends BaseAdapter implements HTQDragGridView.Drag
             holder.titleBar = v.findViewById(R.id.item_note_titlebar);
             holder.date = (TextView) v.findViewById(R.id.item_note_tv_date);
             holder.note_class = (TextView) v.findViewById(R.id.item_note_class);
+            holder.tv_title = (TextView) v.findViewById(R.id.item_note_tv_title);
             holder.state = (ImageView) v.findViewById(R.id.item_note_img_state);
+            holder.img_back = (ImageView) v.findViewById(R.id.item_note_img_back);
             holder.thumbtack = (ImageView) v
                     .findViewById(R.id.item_note_img_thumbtack);
             holder.content = (TextViewFixTouchConsume) v.findViewById(R.id.item_note_content);
@@ -118,6 +126,7 @@ public class NotebookAdapter extends BaseAdapter implements HTQDragGridView.Drag
         params.height = (params.width - height);
         holder.content.setLayoutParams(params);
         holder.note_class.setLayoutParams(params);
+        holder.img_back.setLayoutParams(params);
 
 
         holder.date.setText(data.getDate());
@@ -127,44 +136,44 @@ public class NotebookAdapter extends BaseAdapter implements HTQDragGridView.Drag
 //        } else {
 //            holder.state.setVisibility(View.VISIBLE);
 //        }
+        holder.content.setBackgroundColor(NoteEditFragment.sBackGrounds[data
+                .getColor()]);
+        holder.thumbtack.setImageResource(NoteEditFragment.sThumbtackImgs[data
+                .getColor()]);
+        holder.titleBar
+                .setBackgroundColor(NoteEditFragment.sTitleBackGrounds[data
+                        .getColor()]);
 
+        if (!TextUtils.isEmpty(data.getTitle())) {
+            holder.tv_title.setText(data.getTitle());
+            holder.tv_title.setVisibility(View.VISIBLE);
+        }else {
+            holder.tv_title.setVisibility(View.GONE);
+        }
         if (!TextUtils.isEmpty(data.getContent())) {
-            holder.content.setTextViewHTML(data.getContent());
+            holder.content.setText(data.getContent());
             holder.note_class.setVisibility(View.GONE);
+            holder.img_back.setVisibility(View.GONE);
             holder.content.setVisibility(View.VISIBLE);
             holder.thumbtack.setVisibility(View.VISIBLE);
-            holder.content.setBackgroundColor(NoteEditFragment.sBackGrounds[data
-                    .getColor()]);
-            holder.thumbtack.setImageResource(NoteEditFragment.sThumbtackImgs[data
-                    .getColor()]);
-            holder.titleBar
-                    .setBackgroundColor(NoteEditFragment.sTitleBackGrounds[data
-                            .getColor()]);
-        } else {
+        } else if (!TextUtils.isEmpty(data.getClassified())) {
             holder.content.setVisibility(View.GONE);
             holder.note_class.setVisibility(View.VISIBLE);
-            holder.note_class.setText(data.getClassified());
+            holder.img_back.setVisibility(View.GONE);
             holder.thumbtack.setVisibility(View.GONE);
+
+            holder.note_class.setText(data.getClassified());
             holder.titleBar
                     .setBackgroundColor(0xffFFA726);
             holder.note_class.setBackgroundColor(0xffFFB74D);
+        } else if (!TextUtils.isEmpty(data.getImgpath())) {
+            holder.note_class.setVisibility(View.GONE);
+            holder.img_back.setVisibility(View.VISIBLE);
+            holder.content.setVisibility(View.GONE);
+            holder.thumbtack.setVisibility(View.VISIBLE);
+
+            holder.img_back.setImageBitmap(getLoacalBitmap(data.getImgpath()));
         }
-
-        holder.content.setAutoLinkMask(Linkify.ALL);
-//        holder.content.setMovementMethod(
-//                TextViewFixTouchConsume.LocalLinkMovementMethod.getInstance()
-//        );
-
-        //下面这行代码重要，好多例子中都没有这行代码，
-        //结果实际运行效果却是点击链接没有反应
-//        holder.content.setMovementMethod(LinkMovementMethod.getInstance());
-//        holder.content.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Log.e("way","onclick0");
-//            }
-//        });
-
 
         if (position == currentHidePosition) {
             v.setVisibility(View.GONE);
@@ -197,5 +206,22 @@ public class NotebookAdapter extends BaseAdapter implements HTQDragGridView.Drag
     public void setHideItem(int hidePosition) {
         this.currentHidePosition = hidePosition;
         notifyDataSetChanged();
+    }
+
+    /**
+     * 加载本地图片
+     *
+     * @param url
+     * @return
+     */
+    public static Bitmap getLoacalBitmap(String url) {
+        try {
+            FileInputStream fis = new FileInputStream(url);
+            return BitmapFactory.decodeStream(fis);  ///把流转化为Bitmap图片
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

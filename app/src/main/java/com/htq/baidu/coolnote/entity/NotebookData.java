@@ -23,19 +23,37 @@ public class NotebookData extends BmobObject implements /*Serializable,*/
 
     private String userId;//用于服务器端存储需要
 
-    private String unixTime;
+    private String unixTime;//
 
-    private String date;
+    private String date;//日期
 
-    private String Classified;
+    private String Classified;//分类
 
-    private String content;
+    private String content;//内容
 
-    private String colorText;
-    private String father;
+    private String colorText;//字体颜色
+    private String father;//父分类
+    private String imgpath;//图片地址
+    private String title;//标题
 
     private int color;
     private int level;
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getImgpath() {
+        return imgpath;
+    }
+
+    public void setImgpath(String imgpath) {
+        this.imgpath = imgpath;
+    }
 
     public String getFather() {
         return father;
