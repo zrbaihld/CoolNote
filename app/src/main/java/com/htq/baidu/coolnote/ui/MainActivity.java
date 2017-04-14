@@ -342,7 +342,7 @@ public class MainActivity extends AppCompatActivity
      * 新建的点击操作
      * @param menuItem
      */
-    @OnClick({R.id.menu_item_text_font, R.id.menu_item_clock, R.id.menu_item_pic})
+    @OnClick({R.id.menu_item_text_font, R.id.menu_item_clock, R.id.menu_item_pic,R.id.menu_item_video})
     public void click(FloatingActionButton menuItem) {
         switch (menuItem.getId()) {
             case R.id.menu_item_text_font://新建分类
@@ -384,7 +384,10 @@ public class MainActivity extends AppCompatActivity
                 Log.e("exce", "新建图片");
                 showAvatarPop();
                 break;
-
+            case R.id.menu_item_video://新建录音
+                Log.e("exce", "新建录音");
+                startActivity(new Intent(this,RecordSoundActivity.class));
+                break;
         }
 
 

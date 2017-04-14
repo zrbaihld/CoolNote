@@ -8,6 +8,8 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.text.TextUtils;
@@ -25,6 +27,8 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.danielkim.soundrecorder.RecordingItem;
+import com.danielkim.soundrecorder.fragments.PlaybackFragment;
 import com.htq.baidu.coolnote.R;
 import com.htq.baidu.coolnote.adapter.NotebookAdapter;
 import com.htq.baidu.coolnote.db.NoteDatabase;
@@ -120,6 +124,7 @@ public class NoteBookFragment extends Fragment implements
 
     /**
      * HTQDragGridView 列表的item点击操作
+     *
      * @param parent
      * @param view
      * @param position
@@ -145,7 +150,27 @@ public class NoteBookFragment extends Fragment implements
             initData();
         } else if (!TextUtils.isEmpty(data.getImgpath())) {
 
+        } else if (!TextUtils.isEmpty(data.getSoundpath())) {
+            try {
+                RecordingItem recordingItem = new RecordingItem();
+                recordingItem.setFilePath(data.getSoundpath());
+                recordingItem.setName(data.getTitle());
+                recordingItem.setTime(Long.parseLong(data.getmElapsedMillis()));
+                recordingItem.setLength(Integer.parseInt(data.getmElapsedMillis()));
+                PlaybackFragment playbackFragment =
+                        new PlaybackFragment().newInstance(recordingItem);
+
+                FragmentTransaction transaction = (getActivity())
+                        .getSupportFragmentManager()
+                        .beginTransaction();
+
+                playbackFragment.show(transaction, "dialog_playback");
+
+            } catch (Exception e) {
+                Log.e("exce", "exception", e);
+            }
         }
+
     }
 
     /*****************************
@@ -178,6 +203,7 @@ public class NoteBookFragment extends Fragment implements
 
     /**
      * 控件的初始化操作
+     *
      * @param view
      */
     public void initView(View view) {
@@ -349,6 +375,7 @@ public class NoteBookFragment extends Fragment implements
 
     /**
      * 加载标题浪左边的按钮样式
+     *
      * @param menu
      * @param inflater
      */
@@ -360,6 +387,7 @@ public class NoteBookFragment extends Fragment implements
 
     /**
      * 标题栏左边按钮点击操作
+     *
      * @param item
      * @return
      */

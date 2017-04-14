@@ -143,7 +143,7 @@ public class NotebookAdapter extends BaseAdapter implements HTQDragGridView.Drag
         holder.titleBar
                 .setBackgroundColor(NoteEditFragment.sTitleBackGrounds[data
                         .getColor()]);
-
+        holder.img_back.setScaleType(ImageView.ScaleType.CENTER);
         if (!TextUtils.isEmpty(data.getTitle())) {
             holder.tv_title.setText(data.getTitle());
             holder.tv_title.setVisibility(View.VISIBLE);
@@ -173,6 +173,15 @@ public class NotebookAdapter extends BaseAdapter implements HTQDragGridView.Drag
             holder.thumbtack.setVisibility(View.VISIBLE);
 
             holder.img_back.setImageBitmap(getLoacalBitmap(data.getImgpath()));
+            holder.img_back.setScaleType(ImageView.ScaleType.CENTER_CROP);
+
+        }else if (!TextUtils.isEmpty(data.getSoundpath())) {
+            holder.note_class.setVisibility(View.GONE);
+            holder.img_back.setVisibility(View.VISIBLE);
+            holder.content.setVisibility(View.GONE);
+            holder.thumbtack.setVisibility(View.VISIBLE);
+
+            holder.img_back.setImageResource(R.drawable.ic_fileviewer);
         }
 
         if (position == currentHidePosition) {

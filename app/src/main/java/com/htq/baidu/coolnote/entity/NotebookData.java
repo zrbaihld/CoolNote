@@ -35,6 +35,24 @@ public class NotebookData extends BmobObject implements /*Serializable,*/
     private String father;//父分类
     private String imgpath;//图片地址
     private String title;//标题
+    private String soundpath;//录音地址
+    private String mElapsedMillis;//录音时长
+
+    public String getmElapsedMillis() {
+        return mElapsedMillis;
+    }
+
+    public void setmElapsedMillis(String mElapsedMillis) {
+        this.mElapsedMillis = mElapsedMillis;
+    }
+
+    public String getSoundpath() {
+        return soundpath;
+    }
+
+    public void setSoundpath(String soundpath) {
+        this.soundpath = soundpath;
+    }
 
     private int color;
     private int level;
@@ -96,9 +114,8 @@ public class NotebookData extends BmobObject implements /*Serializable,*/
         }
     }
 
-public void postNoteToServer(Context context,final OnResponseListener listener)
-{
- //   for(int i=0;i<data.size();i++) {
+    public void postNoteToServer(Context context, final OnResponseListener listener) {
+        //   for(int i=0;i<data.size();i++) {
         save(context, new SaveListener() {
             @Override
             public void onSuccess() {
@@ -119,18 +136,16 @@ public void postNoteToServer(Context context,final OnResponseListener listener)
                 }
             }
         });
- //   }
-}
+        //   }
+    }
 
     /**
-     *
      * @param context
      * @param listener
      */
-    public void updateNoteInServe(Context context,String objectId,final OnResponseListener listener)
-    {
+    public void updateNoteInServe(Context context, String objectId, final OnResponseListener listener) {
         //objectId,
-          update(context, new UpdateListener() {
+        update(context, new UpdateListener() {
             @Override
             public void onSuccess() {
                 if (listener != null) {
@@ -151,9 +166,9 @@ public void postNoteToServer(Context context,final OnResponseListener listener)
             }
         });
     }
-    public void deleteNoteInServe(Context context,/*int noteId,*/final OnResponseListener listener)
-    {
-       // String objectId=new NoteDatabase().query();
+
+    public void deleteNoteInServe(Context context,/*int noteId,*/final OnResponseListener listener) {
+        // String objectId=new NoteDatabase().query();
 
         delete(context, new DeleteListener() {
             @Override
@@ -177,6 +192,7 @@ public void postNoteToServer(Context context,final OnResponseListener listener)
         });
 
     }
+
     public int getId() {
         return id;
     }
@@ -216,7 +232,7 @@ public void postNoteToServer(Context context,final OnResponseListener listener)
 
     public void setUnixTime(String time) {
         this.unixTime = time;
-      //  setServerUpdateTime(time);
+        //  setServerUpdateTime(time);
     }
 
     public String getClassified() {
@@ -261,24 +277,24 @@ public void postNoteToServer(Context context,final OnResponseListener listener)
 
     public void setColor(int color) {
         switch (color) {
-        case 0:
-            colorText = "green";
-            break;
-        case 1:
-            colorText = "yellow";
-            break;
-        case 2:
-            colorText = "red";
-            break;
-        case 3:
-            colorText = "blue";
-            break;
-        case 4:
-            colorText = "purple";
-            break;
-        default:
-            this.color = color;
-            break;
+            case 0:
+                colorText = "green";
+                break;
+            case 1:
+                colorText = "yellow";
+                break;
+            case 2:
+                colorText = "red";
+                break;
+            case 3:
+                colorText = "blue";
+                break;
+            case 4:
+                colorText = "purple";
+                break;
+            default:
+                this.color = color;
+                break;
         }
     }
 

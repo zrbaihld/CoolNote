@@ -529,8 +529,6 @@ public class NoteEditFragment extends Fragment implements View.OnClickListener, 
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.public_menu_send:
-
-
                 if (!StringUtils.isEmpty(mEtContent.getText().toString())) {
                     if (mTvContent.getVisibility() == View.VISIBLE) {
                         getActivity().finish();
@@ -540,12 +538,9 @@ public class NoteEditFragment extends Fragment implements View.OnClickListener, 
                         mEtContent.setVisibility(View.GONE);
                         mTvContent.setText(mEtContent.getText().toString());
                     }
-
                 } else {
                     Toast.makeText(getActivity(), "亲,内容为空哦", Toast.LENGTH_LONG).show();
                 }
-
-
                 break;
         }
         return true;

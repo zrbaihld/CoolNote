@@ -72,6 +72,13 @@
             android:src="@drawable/menu_alert"
             app:fab_label="新建图片"
             app:fab_size="mini"/>
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/menu_item_video"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/menu_alert"
+            app:fab_label="新建录音"
+            app:fab_size="mini"/>
     </com.github.clans.fab.FloatingActionMenu>
 
 

@@ -63,7 +63,10 @@
             android:name="com.htq.baidu.coolnote.ui.UnLockActivity"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
-
+        <activity
+            android:name="com.htq.baidu.coolnote.ui.RecordSoundActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
         <activity
             android:name="com.htq.baidu.coolnote.ui.LoginActivity"
             android:theme="@style/AppTheme.NoActionBar">

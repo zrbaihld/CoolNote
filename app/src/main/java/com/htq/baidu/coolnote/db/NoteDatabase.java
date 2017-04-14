@@ -41,14 +41,17 @@ public class NoteDatabase {
                 " level," +
                 " father," +
                 " path," +
-                " title" +
-                ") values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                " title," +
+                " soundpath," +
+                " ElapsedMillis" +
+                ") values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         SQLiteDatabase sqlite = dbHelper.getWritableDatabase();
         sqlite.execSQL(sql, new String[]{data.getId() + "",
                 data.getIid() + "", data.getObjectId(), data.getUnixTime() + "", data.getDate(),
                 data.getContent(), data.getColor() + "", data.getClassified(), data.getLevel() + "", data.getFather(),
-                data.getImgpath(), data.getTitle()});
+                data.getImgpath(), data.getTitle(),data.getSoundpath(),
+                data.getmElapsedMillis()});
         sqlite.close();
     }
 
@@ -71,13 +74,27 @@ public class NoteDatabase {
                 " level," +
                 " father," +
                 " path," +
-                " title" +
-                ") values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                " title," +
+                " soundpath," +
+                " ElapsedMillis" +
+                ") values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         SQLiteDatabase sqlite = dbHelper.getWritableDatabase();
         sqlite.execSQL(sql, new String[]{data.getId() + "",
-                data.getIid() + "", data.getObjectId(), data.getUnixTime() + "", data.getDate(),
-                data.getContent(), data.getColor() + "", data.getClassified(), data.getLevel() + "", data.getFather(), data.getImgpath()});
+                data.getIid() + "",
+                data.getObjectId(),
+                data.getUnixTime() + "",
+                data.getDate(),
+                data.getContent(),
+                data.getColor() + "",
+                data.getClassified(),
+                data.getLevel() + "",
+                data.getFather(),
+                data.getImgpath(),
+                data.getTitle(),
+                data.getSoundpath(),
+                data.getmElapsedMillis()
+        });
         sqlite.close();
     }
 
@@ -110,7 +127,9 @@ public class NoteDatabase {
                 " level=?," +
                 " father=?," +
                 " path=?," +
-                " title=?" +
+                " title=?," +
+                " soundpath=?," +
+                " ElapsedMillis=?" +
                 " where _id=?");
         sqlite.execSQL(sql,
                 new String[]{data.getIid() + "", data.getObjectId() + "", data.getUnixTime() + "",
@@ -121,7 +140,10 @@ public class NoteDatabase {
                         data.getFather(),
                         data.getImgpath(),
                         data.getTitle(),
-                        data.getId() + ""});
+                        data.getSoundpath(),
+                        data.getmElapsedMillis(),
+                        data.getId() + ""
+                });
         sqlite.close();
     }
 
@@ -166,6 +188,8 @@ public class NoteDatabase {
             notebookData.setFather(cursor.getString(9));
             notebookData.setImgpath(cursor.getString(10));
             notebookData.setTitle(cursor.getString(11));
+            notebookData.setSoundpath(cursor.getString(12));
+            notebookData.setmElapsedMillis(cursor.getString(13));
             data.add(notebookData);
         }
         if (!cursor.isClosed()) {
@@ -206,6 +230,7 @@ public class NoteDatabase {
         } else {
             insert(data);
         }
+
     }
 
     //
