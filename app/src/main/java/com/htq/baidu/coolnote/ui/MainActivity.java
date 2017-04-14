@@ -89,7 +89,7 @@ public class MainActivity extends AppCompatActivity
 
     public FloatingActionMenu fab;
     public static String FATHER = "";
-    private String s_title = "颖火虫笔记";
+    private String s_title = "多功能笔记";
 
     private Toolbar toolbar;
     private View exitBtn;

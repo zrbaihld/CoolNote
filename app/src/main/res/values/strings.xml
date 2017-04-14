@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">颖火虫笔记</string>
+    <string name="app_name">多功能笔记</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -13,7 +13,7 @@
     <string name="about_me">作者： </string>
     <string name="setting">设置</string>
     <string name="home">主页</string>
-    <string name="author">颖火虫笔记 @htq All rights reserved </string>
+    <string name="author">多功能笔记 </string>
     <string name="jia_mi">应用加密</string>
     <string name="slogan">漂亮好用的记事本</string>
     <string name="exit">退出</string>
