@@ -17,6 +17,10 @@ allprojects {
     repositories {
         jcenter()
         maven { url "https://raw.github.com/bmob/bmob-android-sdk/master" }
+        maven {
+            name "jcenter"
+            url "http://jcenter.bintray.com/"
+        }
     }
 
 }
